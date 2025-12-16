@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Coach For Success - Register User</title>
+    <meta name="description" content="User login page" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/fonts.googleapis.com.css" />
+    <link rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="css/style-admin.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js" defer="defer"></script>
+	<script src="../js/cfs.js"></script>
+	<script type="text/javascript">
+	$( document ).ready(function() {
+		//change selectboxes to selectize mode to be searchable
+		$("#organisationId").select2({
+	   	    placeholder: "Select Organisation"
+	   	});
+
+		$("#employeeType").on('change', function() {
+			const userType = $("#employeeType").val();
+		    if(userType != null && userType == 'ADMIN') {
+				$('#organisationId').select2({ placeholder: "Select Organisation", maximumSelectionLength: 1 });
+		    } else {
+				$('#organisationId').select2({ placeholder: "Select Organisation" });
+		    	$("#organisationId").val('').trigger('change');
+		    }
+		})
+		
+		$("#employeeType").select2();
+
+		$("#employeePositionId").select2();
+
+		showLabel();
+
+		formatPhoneNumber('mobileNumber');
+
+		$("#reviewDateDt").on("change", function() {
+			if(this.value){
+				this.setAttribute(
+				        "data-date",
+				        moment(this.value, "YYYY-MM-DD")
+				        .format( this.getAttribute("data-date-format") )
+				    )
+				    $(this).closest(".field-wrapper").addClass("hasValue");
+		      } else{
+		        $(this).attr('data-date', '');
+		      }
+		}).trigger("change");
+	});
+	</script>
+</head>
+<body class="no-skin">
+<div id="navbar" class="navbar navbar-default navbar-collapse h-navbar ace-save-state" th:replace="layout/navbar :: navbar"></div>
+<div class="main-container">
+    <div id="sidebar" class="sidebar h-sidebar navbar-collapse collapse ace-save-state" th:replace="layout/menu :: menu"></div>
+	<div class="main-content">
+           <div class="main-content-inner">
+               <div class="page-content">
+                   <div class="page-header">
+                       <h1>Register User</h1>
+                   </div>
+                   <div>
+                       <h3 id="message"></h3>
+                   </div>
+                   <div class="box101">
+                       <div id="add-comment">
+                           <article class="form-part">
+                               <div id="demo" class="collapse in">
+                                   <div class="allergies insurance form-box">
+                                       <div class="from-body-plan">
+                                           <form id="userForm" method="POST" autocomplete="off">
+                                               <div class="panel-body form-horizontal payment-form">
+                                                   <div class="formBox">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+                               			 						<input type="text" id="firstName" name="firstName" required="required">
+													            <div class="field-placeholder"><span>First Name</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+						                                        <input type="text" name="lastName" required="required">
+													            <div class="field-placeholder"><span>Last Name</span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+                    						                   	<input type="text" name="employeeNumber" maxlength="20">
+													            <div class="field-placeholder"><span>Employee Number</span></div>
+                                                           </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+                    						                    <input type="text" id="mobileNumber" name="mobileNumber" required="required" maxlength="12" />
+													            <div class="field-placeholder"><span>Mobile Number</span></div>
+                                                           </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+                                       							<input type="text" name="primaryEmail" required="required" />
+													            <div class="field-placeholder"><span>Primary Email ID</span></div>
+                                                           </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+   	                                                            <select id="employeeType" name="employeeType" style="width:200px;" class="operator">
+																   	<option value="">Select User Type</option>
+																   	<option th:each="roleControl : ${roleControl}" th:value="${{roleControl}}" th:text="${roleControl}"></option>
+   	                                                            </select>
+                                                           </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+	                                                            <select id="organisationId" name="organisationId" style="width:200px;" class="operator" multiple="multiple" onchange="getEmployeePosition()">
+																   	<option th:each="organisation : ${organisations}" th:value="${{organisation.id}}" th:text="${organisation.name}"></option>
+   	                                                            </select>
+                                                           </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="field-wrapper inputBox col-sm-12">
+	                                                            <select id="employeePositionId" name="employeePositionId" style="width:200px;" class="operator">
+                                                                  	<option value="">Select Employee Position</option>
+																   	<option th:each="employeePosition : ${employeePositions}" th:value="${{employeePosition.id}}" th:text="${employeePosition.name}"></option>
+   	                                                            </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clearfix form-actions">
+                                                        <div class="col-md-offset-3 col-md-9">
+                                                            <button class="btn btn-info" type="button" onclick="createUser('create')">
+                                                                <i class="ace-icon fa fa-check bigger-110"></i>
+                                                                Submit
+                                                            </button>
+                                                            &nbsp; &nbsp; &nbsp;
+                                                            <button class="btn" type="reset">
+                                                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                                                Reset
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                   </div>
+                                               <div class="clr"></div>
+                                           </div>
+                                           <input type="hidden" name="Authorization" id="Authorization">
+                                           <input type="hidden" name="saveType" id="saveType">
+                                       </form>
+                                   </div>
+                               </div>
+                           </div>
+                       </article>
+                       <div class="clr"></div>
+                            <article class="hy14 form-part">
+                                <div id="demo" class="insu collapse in">
+                                    <div id="userDiv" class="form-box">
+	                                    <form id="userListForm" action="/edituser" name="userListForm" method="POST">
+										    <input type="hidden" id="Authorization" name="Authorization">
+											<input type="hidden" id="userId" name="userId">
+                                        </form>
+	                                        <table id="users" class="table table-striped table-bordered" style="width:100%">
+	                                            <thead>
+	                                                <tr>
+	                                                    <th>Employee No</th>
+	                                                    <th>Name</th>
+	                                                    <th>Email</th>
+	                                                    <th>Employee Position</th>
+	                                                    <th>Department</th>
+	                                                    <th>Status</th>
+	                                                    <th>Action</th>
+	                                                </tr>
+	                                            </thead>
+	                                            <tbody>
+	                                                <tr th:each="user : ${users}">
+	                                                    <td th:text="${user.employeeNumber}"></td>
+	                                                    <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
+	                                                    <td th:text="${user.primaryEmail}"></td>
+	                                                    <td th:text="${user.employeePosition}"></td>
+	                                                    <td th:text="${user.department}"></td>
+	                                                    <td th:text="${user.status}"></td>
+	                                                    <td>
+	                                                        <a href="#">
+	                                                            <button type="button" class="btn btn-xs btn-info" title="Edit User" th:onclick="updateUser([[${user.id}]])" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER')">
+	                                                                <i class="ace-icon fa fa-pencil bigger-120"></i>
+	                                                            </button>
+	                                                        </a>
+	                                                        <a href="#">
+	                                                            <button type="button" class="btn btn-xs btn-info" title="Delete User" th:onclick="deleteUser([[${user}]])" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN')">
+	                                                                <i class="ace-icon fa fa-trash bigger-120"></i>
+	                                                            </button>
+	                                                        </a>
+	                                                        <a href="#">
+	                                                            <button type="button" class="btn btn-xs btn-info" title="Activate/Deactivate User" th:onclick="activateUser([[${user}]])" sec:authorize="hasAnyRole('ROLE_SUPERUSER')">
+	                                                                <i class="ace-icon fa bigger-120" th:classappend="${user.status} == 'ACTIVE' ? fa-toggle-on : fa-toggle-off"></i>
+	                                                            </button>
+	                                                        </a>
+	                                                        <a href="#">
+		                                                        <button class="reviewButton btn btn-xs btn-info" title="Start Review" data-toggle="modal" data-target="#startDateModal" th:attr="data-user-id=${user.id},data-user-name=${user.firstName} + ' ' + ${user.lastName}" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')">
+		                                                            <i class="ace-icon fa fa-tachometer bigger-120"></i>
+		                                                        </button>
+	                                                        </a>
+	                                                    </td>
+	                                                </tr>
+	                                            </tbody>
+	                                        </table>
+                                    </div>
+                                </div>
+                            </article>
+                            <div class="clr"></div>
+                   </div>
+               </div>
+           </div><!-- /.page-content -->
+       </div>
+   </div>
+   <form id="userModelForm" action="/updateReviewDate" method="POST">
+   	<!-- Modal -->
+	<div class="modal fade" id="startDateModal" tabindex="-1" role="dialog" aria-labelledby="startDateModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+          <div>
+              <h3 id="modalMessage"></h3>
+          </div>
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="startDateModalLabel">Start Review</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+          	<div class="field-wrapper inputBox">
+ 				<strong>Review Date</strong><input type="date" data-date="" class="calendar" data-date-format="YYYY-MM-DD" id="reviewDateDt" name="reviewDateDt" />
+		  	</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary" id="startReviewSubmit">Start Review</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+    <input type="hidden" id="Authorization" name="Authorization">
+	<input type="hidden" id="userId" name="userId">
+	<input type="hidden" id="reviewDate" name="reviewDate">
+</form>
+   <!-- /.main-content -->
+   <div id="footer" class="footer" th:replace="layout/footer :: footer"></div>
+</div>
+<!-- /.main-container -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/ace-elements.min.js"></script>
+<script src="js/ace.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap.js"></script>
+<script>
+$(document).ready(function () {
+	showLabel();
+	showLabelForDate();
+	$('#users').DataTable();
+});
+</script>
+</body>
+</html>

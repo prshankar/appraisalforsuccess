@@ -1,0 +1,27 @@
+<div class="form-box" id="yearDiv">
+	<table id="years" class="table table-striped table-bordered" style="width:100%">
+	    <thead>
+	        <tr>
+	            <th class="dt-checkboxes-select-all sorting_disabled" tabindex="0" aria-controls="years" rowspan="1" colspan="1" style="width: 13px;" data-col="0" aria-label=""><input type="checkbox"></th>
+	            <th>ID</th>
+	            <th>Year</th>
+	            <th>Status</th>
+	            <th>Edit</th>
+	    </thead>
+	    <tbody>
+	        <tr th:each="year : ${years}" th:object="${years}">
+	            <td class=" dt-body-center"><input type="checkbox" class="dt-checkboxes" th:value="${year.year}"></td>
+	            <td th:text="${year.id}"></td>
+	            <td th:text="${year.year}"></td>
+	            <td th:text="${year.status}"></td>
+	            <td class="link45">
+	                <a href="#">
+	                    <button class="btn btn-xs btn-info" th:onclick="updateYear([[${year.id}]], [[${year.year}]], [[${year.status}]])">
+	                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+	                    </button>
+	                </a>
+	            </td>
+	        </tr>
+	    </tbody>
+	</table>
+</div>

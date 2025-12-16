@@ -1,0 +1,17 @@
+<tbody id="performanceGoalBody">
+	<tr th:each="performanceGoalDto,i : ${performanceGoalDtos.performanceGoalDto}" th:object="${performanceGoalDtos}">
+	    <td>
+	    	<span th:text="Goal + ${i.count}" style="font-weight: bold;"></span><br>
+	    </td>
+	    <td>
+	        <select style="width: 170px;" th:field="*{performanceGoalDto[__${i.index}__].goalId}">
+	            <option value="">Select Goal</option>
+			   	<option th:each="goal : ${performanceGoalDtos.goals}" th:value="${{goal.id}}" th:text="${goal.name}"></option>
+	        </select>
+	    </td>
+	    <td>
+			<textarea th:field="*{performanceGoalDto[__${i.index}__].result}" rows="20" style="resize: none;"></textarea>
+			<input type="hidden" th:field="*{performanceGoalDto[__${i.index}__].id}" th:value="${performanceGoalDto.id}">
+	    </td>
+	</tr>
+</tbody>

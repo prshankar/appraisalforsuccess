@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Coach For Success - Appraisal</title>
+    <meta name="description" content="top menu &amp; navigation" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/fonts.googleapis.com.css" />
+    <link rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="css/style-admin.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="js/cfs.js"></script>
+	<script type="text/javascript">
+	$( document ).ready(function() {
+		$(document).on("click", ".employeeCheckbox", function() {
+			var tr = $(this).closest("tr");
+			$('.employeeCheckbox',tr).not(this).prop("checked", false);
+		});
+
+		$(document).on("click", ".managerCheckbox", function() {
+			var tr = $(this).closest("tr");
+			$('.managerCheckbox',tr).not(this).prop("checked", false);
+		});
+
+		//$(".specificexample >input").off('keyup').on('keyup', function(e) {
+		//	if (e.which === 13) {
+		  //  	$(this).next('input').focus();
+		    //}
+		//});
+	});
+	</script>
+</head>
+<body class="no-skin">
+	<div id="navbar" class="navbar navbar-default navbar-collapse h-navbar ace-save-state" th:replace="layout/navbar :: navbar"></div>
+	<div class="main-container">
+	    <div id="sidebar" class="sidebar h-sidebar navbar-collapse collapse ace-save-state" th:replace="layout/menu :: menu"></div>
+		<div class="main-content">
+	            <div class="main-content-inner">
+	                <div class="page-content">
+	                    <div>
+	                        <h3 id="message"></h3>
+	                    </div>
+	                    <div class="box101">
+	                        <div id="add-comment">
+                                <form id="appraisalForm" action="/createOrUpdateAppraisal" method="POST" th:object="${appraisalDtos}">
+		                            <article class="form-part">
+		                                <div id="demo" class="collapse in">
+		                                    <div class="allergies insurance form-box">
+		                                        <div class="from-body-plan">
+	                                                <div class="panel-body form-horizontal payment-form">
+	                                                    <div class="formBox">
+	                                                           <div class="row">
+	                                                               <div class="col-sm-4" sec:authorize="hasAnyRole('ROLE_MANAGER')">
+	                                                                   <label class="col-sm-3 font98">Employee:</label>
+	                                                                   <div class="form-group col-sm-9">
+	                                                                       <select style="width: 80px;" id="appraisalUserId" name="appraisalUserId" onchange="getAppraisalYear()">
+	                                                                           <option value="">Select</option>
+																		   	   <option th:each="appraisalUser : ${appraisalUsers}" th:attr="data-employee-position-id=${appraisalUser.employeePositionId}" th:value="${appraisalUser.id}" th:text="${appraisalUser.firstName} + ' ' +  ${appraisalUser.lastName}"></option>
+	                                                                       </select>
+	                                                                   </div>
+	                                                               </div>
+                                                                   <input type="hidden" id="appraisalUserId" name="appraisalUserId" sec:authorize="hasAnyRole('ROLE_EMPLOYEE')">
+	                                                               <div class="col-sm-4" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_MANAGER', 'ROLE_EMPLOYEE')">
+	                                                                   <label class="col-sm-3 font98">Appraisal Year:</label>
+	                                                                   <div class="form-group col-sm-9">
+	                                                                       <select style="width: 80px;" id="year" name="year" onchange="getValuesForAppraisal()">
+	                                                                           <option value="">Select</option>
+																		   	   <option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
+	                                                                       </select>
+	                                                                   </div>
+	                                                               </div>
+	                                                               <div class="col-sm-4" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_MANAGER', 'ROLE_EMPLOYEE')">
+	                                                                   <label class="col-sm-3 font98">Value:</label>
+	                                                                   <div class="form-group col-sm-9">
+	                                                                       <select style="width: 80px;" id="valueId" name="valueId" onchange="getUserAppraisal()">
+	                                                                           <option value="">Select</option>
+																		   	   <option th:each="value : ${values}" th:value="${value.id}" th:text="${value.name}"></option>
+	                                                                       </select>
+	                                                                   </div>
+	                                                               </div>
+	                                                           </div>
+	                                                    </div>
+	                                                <div class="clr"></div>
+	                                            </div>
+		                                    </div>
+		                                </div>
+		                            </div>
+		                        </article>
+								<article class="hy14 form-part" style="display: none;" id="appraisal">
+		                                <div id="demo" class="insu collapse in">
+		                                    <div class="form-box">
+		                                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+		                                            <thead>
+														<tr sec:authorize="hasAnyRole('ROLE_MANAGER')">
+		                                                    <th width="35%"></th>
+		                                                    <th colspan="2" style="text-align:center;">Exceeds <i class="fa fa-info-circle text-success" data-toggle="modal" data-target="#exceedsModal" id="exceeds"></i></th>
+		                                                    <th colspan="2" style="text-align:center;">Meets <i class="fa fa-info-circle text-success" data-toggle="modal" data-target="#meetsModal" id="meets"></i></th>
+		                                                    <th colspan="2" style="text-align:center;">Opportunity <i class="fa fa-info-circle text-success" data-toggle="modal" data-target="#opportunityModal" id="opportunity"></i></th>
+		                                                    <th style="text-align:center;">Specific Examples/Comments</th>
+														</tr>
+														<tr sec:authorize="hasRole('ROLE_EMPLOYEE')">
+		                                                    <th width="35%"></th>
+		                                                    <th style="text-align:center;">Exceeds <i class="fa fa-info-circle text-success" data-toggle="modal" data-target="#exceedsModal" id="exceeds"></i></th>
+		                                                    <th style="text-align:center;">Meets <i class="fa fa-info-circle text-success" data-toggle="modal" data-target="#meetsModal" id="meets"></i></th>
+		                                                    <th style="text-align:center;">Opportunity <i class="fa fa-info-circle text-success" data-toggle="modal" data-target="#opportunityModal" id="opportunity"></i></th>
+		                                                    <th style="text-align:center;">Specific Examples/Comments</th>
+														</tr>
+														<tr sec:authorize="hasAnyRole('ROLE_MANAGER')">
+		                                                    <th></th>
+		                                                    <th width="60px" style="text-align:center;">Emp</th>
+		                                                    <th width="60px" style="text-align:center;">Mgr</th>
+		                                                    <th width="60px" style="text-align:center;">Emp</th>
+		                                                    <th width="60px" style="text-align:center;">Mgr</th>
+		                                                    <th width="60px" style="text-align:center;">Emp</th>
+		                                                    <th width="60px" style="text-align:center;">Mgr</th>
+		                                                    <th></th>
+		                                                </tr>
+		                                            </thead>
+		                                            <tbody id="appraisalBody">
+		                                            </tbody>
+		                                        </table>
+		                                    </div>
+		                                </div>
+		                            </article>
+                                    <input type="hidden" id="Authorization" name="Authorization">
+									<input type="hidden" name="userId">
+									<input type="hidden" id="organisationId" name="organisationId" th:value="${organisationId}">
+									<input type="hidden" id="employeePositionId" name="employeePositionId" th:value="${employeePositionId}">
+                                </form>
+	                        <div class="clr"></div>
+							<div class="modal fade" id="exceedsModal" tabindex="-1" role="dialog" aria-labelledby="exceedsModalLabel" aria-hidden="true">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-body">Performance is consistently at a higher standard than would normally be expected for this position.</div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="modal fade" id="meetsModal" tabindex="-1" role="dialog" aria-labelledby="meetsModalLabel" aria-hidden="true">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-body">Performance is consistently of an appropriate standard for this position.</div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+							<div class="modal fade" id="opportunityModal" tabindex="-1" role="dialog" aria-labelledby="opportunityModalLabel" aria-hidden="true">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-body">Performance is at a lower than acceptable standard required for this position.</div>
+							      <div class="modal-footer">
+							        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+	                    </div>
+	                </div>
+	            </div><!-- /.page-content -->
+	        </div>
+	    </div>
+	    <!-- /.main-content -->
+  		<div id="footer" class="footer" th:replace="layout/footer :: footer"></div>
+	</div>
+	<!-- /.main-container -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/ace-elements.min.js"></script>
+    <script src="js/ace.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Coach For Success - Personal Details</title>
+    <meta name="description" content="top menu &amp; navigation" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/fonts.googleapis.com.css" />
+    <link rel="stylesheet" href="css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="css/style-admin.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+	<script src="js/cfs.js"></script>
+	<script type="text/javascript">
+	$( document ).ready(function() {
+		showLabel();
+
+		$("#dateJoined, #dob").on("change", function() {
+			if(this.value){
+				this.setAttribute(
+				        "data-date",
+				        moment(this.value, "YYYY-MM-DD")
+				        .format( this.getAttribute("data-date-format") )
+				    )
+				    $(this).closest(".field-wrapper").addClass("hasValue");
+					getLengthOfService();
+		      } else{
+		        $(this).attr('data-date', '');
+		      }
+		}).trigger("change");
+		
+		if($("#dateJoined").val() != '') {
+			getLengthOfService($("#dateJoined").val())
+		}
+
+		formatPhoneNumber('mobileNumber');
+
+		var mobileNumberValue = document.getElementById('mobileNumber').value;
+		mobileNumberValue = mobileNumberValue.substring(0, 4) + " " + mobileNumberValue.substring(4, 7) + " " + mobileNumberValue.substring(7);
+		document.getElementById('mobileNumber').value = mobileNumberValue;
+	});
+
+	function getLengthOfService(dateJoined) {
+		if($("#dateJoined").val() != '') {
+			var from = $("#dateJoined").val().split("-")
+			var ctrldob = new Date(from[0], from[1] - 1, from[2])
+		   	var ctrldoa = new Date();
+		   	var diff = new Date(ctrldoa.getTime() - ctrldob.getTime());
+		   	var years = diff.getUTCFullYear() - 1970;
+		   	var months = diff.getUTCMonth();
+		   	$("#lengthOfService").val(years + " year(s) and " + months + " month(s).");
+		   	$("#lengthOfService").closest(".field-wrapper").addClass("hasValue");
+		}
+	}
+	</script>
+</head>
+<body class="no-skin">
+	<div id="navbar" class="navbar navbar-default navbar-collapse h-navbar ace-save-state" th:replace="layout/navbar :: navbar"></div>
+	<div class="main-container">
+	    <div id="sidebar" class="sidebar h-sidebar navbar-collapse collapse ace-save-state" th:replace="layout/menu :: menu"></div>
+		<div class="main-content">
+	            <div class="main-content-inner">
+	                <div class="page-content">
+	                    <div>
+	                        <h3 id="message"></h3>
+	                    </div>
+	                    <div class="box101">
+	                        <div id="add-comment">
+	                            <article class="form-part">
+	                                <div id="demo" class="collapse in">
+	                                    <div class="allergies insurance form-box">
+	                                        <div class="from-body-plan">
+	                                            <form id="userForm" method="POST" autocomplete="off">
+	                                                <div class="panel-body form-horizontal payment-form">
+	                                                    <div class="formBox">
+		                                                    <div class="row">
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.firstName} != '' ? hasValue">
+		                    						                   	<input type="text" name="firstName" required="required" th:field="${user.firstName}" readonly="readonly" />
+															            <div class="field-placeholder"><span>First Name</span></div>
+		                                                           </div>
+		                                                        </div>
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.lastName} != '' ? hasValue">
+		                    						                   	<input type="text" name="lastName" required="required" th:field="${user.lastName}" readonly="readonly" />
+															            <div class="field-placeholder"><span>Last Name</span></div>
+		                                                            </div>
+		                                                        </div>
+		                                                    </div>
+		                                                    <div class="row">
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.employeeNumber} != '' ? hasValue">
+		                    						                   	<input type="text" name="employeeNumber" required="required" th:field="${user.employeeNumber}" readonly="readonly" />
+															            <div class="field-placeholder"><span>Employee Number</span></div>
+		                                                           </div>
+		                                                        </div>
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.dateJoined} != '' ? hasValue">
+							                                           <input type="date" class="calendar" data-date="" data-date-format="YYYY-MM-DD" id="dateJoined" name="dateJoined" th:field="${user.dateJoined}" onblur="getLengthOfService(this.value)" />
+															           <div class="field-placeholder"><span>Date Joined</span></div>
+		                                                            </div>
+		                                                        </div>
+		                                                    </div>
+		                                                    <div class="row">
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.primaryEmail} != '' ? hasValue">
+		                                       							<input type="text" name="primaryEmail" required="required" th:field="${user.primaryEmail}" readonly="readonly"/>
+															            <div class="field-placeholder"><span>Email</span></div>
+		                                                            </div>
+		                                                        </div>
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.mobileNumber} != '' ? hasValue">
+		                    						                    <input type="text" name="mobileNumber" required="required" th:field="${user.mobileNumber}" />
+																        <div class="field-placeholder"><span>Mobile Number</span></div>
+		                                                           </div>
+		                                                        </div>
+		                                                    </div>
+		                                                    <div class="row">
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.dob} != '' ? hasValue">
+							                                           <input type="date" class="calendar" data-date="" data-date-format="YYYY-MM-DD" id="dob" name="dob" th:field="${user.dob}" />
+															           <div class="field-placeholder"><span>Date Of Birth</span></div>
+		                                                            </div>
+		                                                        </div>
+		                                                        <div class="col-sm-6">
+			                                                        <div class="col-sm-6">
+			                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.dateJoined} != '' ? hasValue">
+			                                						        <input type="text" id="lengthOfService" name="lengthOfService" readonly="readonly" />
+																            <div class="field-placeholder"><span>Length Of Service</span></div>
+			                                                            </div>
+			                                                        </div>
+		                                                        </div>
+		                                                    </div>
+		                                                    <div class="row">
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.department} != '' ? hasValue">
+		                    						                    <input type="text" name="department" th:field="${user.department}">
+															            <div class="field-placeholder"><span>Department</span></div>
+		                                                           </div>
+		                                                        </div>
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.previousPosition} != '' ? hasValue">
+								                                        <input type="text" name="previousPosition" th:field="${user.previousPosition}">
+															            <div class="field-placeholder"><span>Previous positions held during review period</span></div>
+		                                                            </div>
+		                                                        </div>
+	                                                        </div>
+		                                                    <div class="row">
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.reviewersName} != '' ? hasValue">
+		           						                            	<input type="text" name="reviewersName" required="required" th:field="${user.reviewersName}" readonly="readonly" />
+															            <div class="field-placeholder"><span>Reviewer's Name</span></div>
+		                                                           </div>
+		                                                        </div>
+		                                                        <div class="col-sm-6">
+		                                                            <div class="field-wrapper inputBox col-sm-12" th:classappend="${user.employeePosition} != '' ? hasValue">
+		           						                            	<input type="hidden" name="employeePositionId" th:field="${user.employeePositionId}" />
+		           						                            	<input type="text" name="employeePosition" required="required" th:field="${user.employeePosition}" readonly="readonly" />
+															            <div class="field-placeholder"><span>Employee Position</span></div>
+		                                                           </div>
+		                                                        </div>
+		                                                    </div>
+		                                                    <div class="clearfix form-actions">
+		                                                        <div class="col-md-offset-3 col-md-9">
+		                                                            <button class="btn btn-info" type="button"  onclick="createUser('update');">
+		                                                                <i class="ace-icon fa fa-check bigger-110"></i>
+		                                                                Update
+		                                                            </button>
+		                                                            &nbsp; &nbsp; &nbsp;
+		                                                            <button class="btn" type="reset">
+		                                                                <i class="ace-icon fa fa-undo bigger-110"></i>
+		                                                                Reset
+		                                                            </button>
+		                                                        </div>
+		                                                    </div>
+	                                                    </div>
+	                                                <div class="clr"></div>
+	                                            </div>
+	                                            <input type="hidden" name="Authorization" id="Authorization">
+												<input type="hidden" name="userId">
+	                                           <input type="hidden" name="saveType" id="saveType">
+	                                        </form>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </article>
+	                        <div class="clr"></div>
+	                    </div>
+	                </div>
+	            </div><!-- /.page-content -->
+	        </div>
+	    </div>
+	    <!-- /.main-content -->
+  		<div id="footer" class="footer" th:replace="layout/footer :: footer"></div>
+	</div>
+	<!-- /.main-container -->
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-3.3.1.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+</body>
+</html>

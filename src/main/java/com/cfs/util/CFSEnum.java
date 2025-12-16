@@ -1,0 +1,5 @@
+package com.cfs.util;
+
+public enum CFSEnum {
+	ACTIVE, INACTIVE, ARCHIVED, CURRENT, LOCKED, UNLOCKED, MANAGER, EMPLOYEE, SUPERUSER, ALL;
+}

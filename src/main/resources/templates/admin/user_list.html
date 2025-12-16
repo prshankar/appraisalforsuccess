@@ -1,0 +1,75 @@
+<div class="form-box" id="userDiv">
+	<table id="users" class="table table-striped table-bordered" style="width:100%">
+	    <thead>
+	        <tr>
+                <th>Employee No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Employee Position</th>
+                <th>Status</th>
+                <th>Action</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr th:each="user : ${users}" th:object="${users}">
+                <td th:text="${user.employeeNumber}"></td>
+                <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
+                <td th:text="${user.primaryEmail}"></td>
+                <td th:text="${user.employeePosition}"></td>
+                <td th:text="${user.status}"></td>
+	            <td>
+	                <a href="#">
+	                    <button class="btn btn-xs btn-info" title="Edit User" th:onclick="updateUser([[${user}]])" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER')">
+	                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+	                    </button>
+	                </a>
+	                <a href="#">
+	                    <button class="btn btn-xs btn-info" title="Delete User" th:onclick="deleteUser([[${user}]])" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN')">
+	                        <i class="ace-icon fa fa-trash bigger-120"></i>
+	                    </button>
+	                </a>
+	                <a href="#">
+	                    <button class="btn btn-xs btn-info" title="Activate/Deactivate User" th:onclick="activateUser([[${user}]])" sec:authorize="hasAnyRole('ROLE_SUPERUSER')">
+	                        <i class="ace-icon fa bigger-120" th:classappend="${user.status} == 'ACTIVE' ? fa-toggle-on : fa-toggle-off"></i>
+	                    </button>
+	                </a>
+                    <a href="#">
+                     	<button class="reviewButton btn btn-xs btn-info" title="Start Review" data-toggle="modal" data-target="#startDateModal" th:attr="data-user-id=${user.id},data-user-name=${user.firstName} + ' ' + ${user.lastName}" sec:authorize="hasAnyRole('ROLE_MANAGER')">
+                        	<i class="ace-icon fa fa-tachometer bigger-120"></i>
+                     	</button>
+                    </a>
+	            </td>
+	        </tr>
+	    </tbody>
+	</table>
+</div>
+<form id="userModelForm" action="/updateReviewDate" method="POST">
+	<!-- Modal -->
+	<div class="modal fade" id="startDateModal" tabindex="-1" role="dialog" aria-labelledby="startDateModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+          <div>
+            <h3 id="modalMessage"></h3>
+          </div>
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="startDateModalLabel">Start Review</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+           	<div class="field-wrapper inputBox col-sm-12">
+				<input type="text" data-date-format="dd-mm-yyyy" id="reviewDate" name="reviewDate" placeholder="Review Date" />
+			<div class="field-placeholder"><span>Review Date</span></div>
+	      </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary" id="startReviewSubmit">Start Review</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+    <input type="hidden" id="Authorization" name="Authorization">
+	<input type="hidden" id="userId" name="userId">
+</form>

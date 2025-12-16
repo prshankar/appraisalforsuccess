@@ -1,0 +1,29 @@
+<div class="form-box" id="organisationDiv">
+	<table id="employeePositions" class="table table-striped table-bordered" style="width:100%">
+	    <thead>
+	        <tr>
+                <th>Organisation</th>
+	            <th>Employee Position Name</th>
+	            <th>Edit</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <tr th:each="employeePosition : ${employeePositions}" th:object="${employeePositions}">
+	            <td  th:text="${employeePosition.organisation.name}"></td>
+	            <td  th:text="${employeePosition.name}"></td>
+	            <td class="link45">
+	                <a href="#">
+	                    <button class="btn btn-xs btn-info" th:onclick="updateEmployeePosition([[${employeePosition.id}]], [[${employeePosition.name}]], [[${employeePosition.organisation.id}]])">
+	                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+	                    </button>
+	                </a>
+	                <a href="#">
+	                    <button class="btn btn-xs btn-info" th:onclick="deleteEmployeePosition([[${employeePosition.id}]], [[${employeePosition.name}]])">
+	                        <i class="ace-icon fa fa-trash bigger-120"></i>
+	                    </button>
+	                </a>
+	            </td>
+	        </tr>
+	    </tbody>
+	</table>
+</div>

@@ -1,0 +1,58 @@
+<tbody id="appraisalBody">
+	<tr th:each="appraisalDto,i : ${appraisalDtos.appraisalDto}" th:object="${appraisalDtos}" th:id="row+${i.index}">
+	    <td th:text="${appraisalDto.name}"></td>
+	    <td sec:authorize="hasAnyRole('ROLE_EMPLOYEE','ROLE_MANAGER')" align="center">
+	    	<input th:disabled="${appraisalDtos.screenLock != null && appraisalDtos.screenLock == 'LOCKED'}" type="checkbox" th:field="*{appraisalDto[__${i.index}__].exceedsEmployee}" class="employeeCheckbox" th:readonly="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+	    </td>
+	    <td sec:authorize="hasRole('ROLE_MANAGER')" align="center">
+	    	<input type="checkbox" th:field="*{appraisalDto[__${i.index}__].exceedsManager}" class="managerCheckbox">
+	    </td>
+	    <td sec:authorize="hasAnyRole('ROLE_EMPLOYEE','ROLE_MANAGER')" align="center">
+	    	<input th:disabled="${appraisalDtos.screenLock != null && appraisalDtos.screenLock == 'LOCKED'}" type="checkbox" th:field="*{appraisalDto[__${i.index}__].meetsEmployee}" class="employeeCheckbox" th:readonly="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+	    </td>
+	    <td sec:authorize="hasRole('ROLE_MANAGER')">
+	    	<input type="checkbox" th:field="*{appraisalDto[__${i.index}__].meetsManager}" class="managerCheckbox">
+	    </td>
+	    <td sec:authorize="hasAnyRole('ROLE_EMPLOYEE','ROLE_MANAGER')" align="center">
+	    	<input th:disabled="${appraisalDtos.screenLock != null && appraisalDtos.screenLock == 'LOCKED'}" type="checkbox" th:field="*{appraisalDto[__${i.index}__].doesNotMeetEmployee}" class="employeeCheckbox" th:readonly="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+	    </td>
+	    <td sec:authorize="hasRole('ROLE_MANAGER')" align="center">
+	    	<input type="checkbox" th:field="*{appraisalDto[__${i.index}__].doesNotMeetManager}" class="managerCheckbox">
+	    </td>
+	    <td sec:authorize="hasAnyRole('ROLE_MANAGER','ROLE_EMPLOYEE')">
+			<textarea th:id="specificexample" class="specificexample" th:placeholder="*{appraisalDto[__${i.index}__].lastComment}"></textarea><br>
+            <button class="chat btn btn-info" title="Save Conversation" type="button" th:onclick="createAppraisalMessage($(this),[[${appraisalDto.valueId}]],$(this).parent().find('textarea.specificexample').val())"><i class="ace-icon fa fa-save bigger-110"></i></button>
+            <button class="chat btn btn-info" th:disabled="${appraisalDtos.screenLock != null && appraisalDtos.screenLock == 'LOCKED'}" title="Show Previous Conversation" type="button" th:onclick="showAppraisalMessage([[${appraisalDto.valueId}]])"><i class="ace-icon fa fa-history bigger-110"></i></button>
+			<input type="hidden" th:field="*{appraisalDto[__${i.index}__].taskId}" th:value="${appraisalDto.taskId}">
+	    </td>
+		<input type="hidden" th:field="*{appraisalDto[__${i.index}__].valueId}" th:value="${appraisalDto.valueId}">
+	</tr>
+	<tr id="appraisalSubmitRow">
+
+		<th:block sec:authorize="hasRole('ROLE_EMPLOYEE')">
+			<td colspan="5">
+		</th:block>
+		<th:block sec:authorize="hasRole('ROLE_MANAGER')">
+			<td colspan="8">
+		</th:block>
+
+     		<div class="clearfix form-actions">
+	       		<div class="col-md-offset-3 col-md-9">
+	           		<button id="appraisalSubmit" sec:authorize="hasAnyRole('ROLE_MANAGER')" th:if="${appraisalDtos.status != null && appraisalDtos.status == 'MANAGER_RATING_COMPLETE'}" class="btn btn-info" type="button" onclick="submitAppraisal()">
+	               		<i class="ace-icon fa fa-check bigger-110"></i>
+	               		Submit
+	           		</button>
+	           		<button id="appraisalSave" th:if="${appraisalDtos.screenLock != null && (appraisalDtos.screenLock != 'LOCKED')}" sec:authorize="hasAnyRole('ROLE_MANAGER','ROLE_EMPLOYEE')" class="btn btn-info" type="button" onclick="createAppraisal()">
+	               		<i class="ace-icon fa fa-check bigger-110"></i>
+	               		Save
+	           		</button>
+	           		<button id="appraisalReset" th:if="${appraisalDtos.screenLock != null && appraisalDtos.screenLock != 'LOCKED'}" sec:authorize="hasAnyRole('ROLE_MANAGER','ROLE_EMPLOYEE')" class="btn btn-info" type="reset">
+	               		<i class="ace-icon fa fa-undo bigger-110"></i>
+	               		Reset
+	           		</button>
+	       		</div>
+				<input type="hidden" name="appraisalId" id="appraisalId" th:value="${appraisalDtos.appraisalId}">
+      		</div>
+		</td>
+	</tr>
+</tbody>

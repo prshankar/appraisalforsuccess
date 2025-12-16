@@ -1,0 +1,5 @@
+package com.cfs.util;
+
+public enum CFSAppraisalStatus {
+	STARTED, EMPLOYEE_RATING_START, EMPLOYEE_RATING_END, MANAGER_RATING_COMPLETE, RATING_COMPLETE;
+}

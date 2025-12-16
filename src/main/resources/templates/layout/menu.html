@@ -1,0 +1,74 @@
+
+<div id="sidebar" class="sidebar h-sidebar navbar-collapse collapse ace-save-state" th:fragment="menu">
+<form id="menuForm" name="menuForm" method="POST">
+  <script type="text/javascript">
+  	//window.onbeforeunload = function() {
+    	//return "Data will be lost if you leave the page, are you sure?";
+  	//};
+  </script>
+  <ul class="nav nav-list">
+    <li class="hover" th:classappend="${selectedMenu} == 'dashboard' ? active" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER','ROLE_EMPLOYEE')">
+      <a href="#" onclick="javascript:showPage('/dashboard')">
+	    <img src="/images/cfs-logo-grey.png" alt="Avatar" align="top" style="padding-top: 3px; height: 35px; width: 120px;"/>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'dashboard' ? active" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER','ROLE_EMPLOYEE')">
+      <a href="#" onclick="javascript:showPage('/dashboard')">
+        <i class="menu-icon fa fa-tachometer"></i>
+        <span class="menu-text">Welcome</span>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'personaldetails' ? active" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER','ROLE_EMPLOYEE')">
+      <a href="#" onclick="showPage('/personaldetails')">
+        <i class="menu-icon fa fa-user"></i>
+        <span class="menu-text">Personal Details</span>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'performancegoals' ? active" sec:authorize="hasAnyRole('ROLE_EMPLOYEE')">
+      <a href="#" onclick="showPage('/performancegoals')">
+        <i class="menu-icon fa fa-pencil-square-o"></i>
+        <span class="menu-text">Performance Goals</span>
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'administration' ? active" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER')">
+      <a href="#" onclick="showPage('/administration')">
+        <i class="menu-icon fa fa-list"></i>
+        <span class="menu-text">Administration</span>
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'appraisal' ? active" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER','ROLE_EMPLOYEE')">
+      <a href="#" onclick="showPage('/appraisal')">
+        <i class="menu-icon fa fa-list"></i>
+        <span class="menu-text">Appraisal</span>
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'pdp' ? active" sec:authorize="hasAnyRole('ROLE_EMPLOYEE')">
+      <a href="#" onclick="showPage('/pdp')">
+        <i class="menu-icon fa fa-list"></i>
+        <span class="menu-text">Personal Development Plan</span>
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+      <b class="arrow"></b>
+    </li>
+    <li class="hover" th:classappend="${selectedMenu} == 'faq' ? active" sec:authorize="hasAnyRole('ROLE_SUPERUSER','ROLE_ADMIN','ROLE_MANAGER','ROLE_EMPLOYEE')">
+      <a href="#" onclick="javascript:showPage('/faq')">
+        <i class="menu-icon fa fa-list"></i>
+        <span class="menu-text">FAQ</span>
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+      <b class="arrow"></b>
+    </li>
+  </ul>
+  <input type="hidden" name="Authorization" id="Authorization">
+  <input type="hidden" name="userId" id="userId">
+</form>
+</div>

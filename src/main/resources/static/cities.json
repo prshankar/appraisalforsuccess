@@ -1,0 +1,32 @@
+[
+  {
+    "country": "JAPAN",
+    "countryCode": "81",
+    "cityName": "TOKYO"
+  },
+  {
+    "country": "RUSSIA",
+    "countryCode": "7",
+    "cityName": "MOSCOW"
+  },
+  {
+    "country": "UK",
+    "countryCode": "44",
+    "cityName": "LONDON"
+  },
+  {
+    "country": "USA",
+    "countryCode": "1",
+    "cityName": "NEW YORK"
+  },
+  {
+    "country": "ITALY",
+    "countryCode": "39",
+    "cityName": "MILAN"
+  },
+  {
+    "country": "INDIA",
+    "countryCode": "91",
+    "cityName": "MUMBAI"
+  }    
+]
